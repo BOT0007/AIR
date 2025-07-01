@@ -1,35 +1,3 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI R met ChatGPT</title>
-  <style>
-    body {
-      background: linear-gradient(to bottom, #0a0f2c, #000);
-      color: white;
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    #login, #chat { display: none; }
-    input, button { padding: 10px; margin: 5px; font-size: 16px;}
-  </style>
-</head>
-<body>
-  <div id="login">
-    <h2>Voer toegangscode in</h2>
-    <input type="password" id="codeInput" placeholder="Code">
-    <button onclick="checkCode()">Inloggen</button>
-    <p id="triesLeft"></p>
-  </div>
-
-  <div id="chat">
-    <h1>Welkom bij AI R</h1>
-    <div id="chatbox"></div>
-    <input type="text" id="userInput" placeholder="Typ hier..." onkeydown="if(event.key==='Enter')send()">
-    <button onclick="send()">Stuur</button>
-  </div>
-
 <script>
 let tries = 3;
 document.getElementById("login").style.display = "block";
@@ -57,22 +25,26 @@ async function send() {
   chat.innerHTML += "<div><b>Jij:</b> " + text + "</div>";
   document.getElementById("userInput").value = "";
 
-  let response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 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"
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: text }]
-    })
-  });
+  try {
+    let response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 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"
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: text }]
+      })
+    });
 
-  let data = await response.json();
-  let aiText = data.choices[0].message.content;
-  chat.innerHTML += "<div><b>AI R:</b> " + aiText + "</div>";
+    let data = await response.json();
+    console.log(data); // zie JSON output in console
+    let aiText = data.choices[0].message.content;
+    chat.innerHTML += "<div><b>AI R:</b> " + aiText + "</div>";
+  } catch (err) {
+    console.error(err);
+    chat.innerHTML += "<div style='color:red'><b>Fout:</b> " + err + "</div>";
+  }
 }
 </script>
-</body>
-</html>
