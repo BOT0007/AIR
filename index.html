@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI R</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #0a0f2c, #000);
+      color: white;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    #login, #chat { display: none; }
+    input, button { padding: 10px; margin: 5px; font-size: 16px;}
+  </style>
+</head>
+<body>
+  <div id="login">
+    <h2>Voer toegangscode in</h2>
+    <input type="password" id="codeInput" placeholder="Code">
+    <button onclick="checkCode()">Inloggen</button>
+    <p id="triesLeft"></p>
+  </div>
+
+  <div id="chat">
+    <h1>Welkom bij AI R</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Typ hier..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">Stuur</button>
+  </div>
+
+<script>
+let tries = 3;
+document.getElementById("login").style.display = "block";
+
+function checkCode() {
+  let input = document.getElementById("codeInput").value;
+  if (input === "6223") {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("chat").style.display = "block";
+  } else {
+    tries--;
+    if (tries <= 0) {
+      alert("Te vaak fout, app wordt verwijderd.");
+      localStorage.clear();
+      location.href = "https://google.com";
+    } else {
+      document.getElementById("triesLeft").innerText = `Nog ${tries} pogingen.`;
+    }
+  }
+}
+
+function send() {
+  let text = document.getElementById("userInput").value;
+  let chat = document.getElementById("chatbox");
+  chat.innerHTML += "<div><b>Jij:</b> " + text + "</div>";
+  document.getElementById("userInput").value = "";
+
+  setTimeout(() => {
+    chat.innerHTML += "<div><b>AI R:</b> Dit is een testantwoord op \"" + text + "\".</div>";
+  }, 500);
+}
+</script>
+</body>
+</html>
