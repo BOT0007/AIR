@@ -1,9 +1,10 @@
+ik ben de editor
 <!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI R</title>
+  <title>AI R met ChatGPT</title>
   <style>
     body {
       background: linear-gradient(to bottom, #0a0f2c, #000);
@@ -51,15 +52,27 @@ function checkCode() {
   }
 }
 
-function send() {
+async function send() {
   let text = document.getElementById("userInput").value;
   let chat = document.getElementById("chatbox");
   chat.innerHTML += "<div><b>Jij:</b> " + text + "</div>";
   document.getElementById("userInput").value = "";
 
-  setTimeout(() => {
-    chat.innerHTML += "<div><b>AI R:</b> Dit is een testantwoord op \"" + text + "\".</div>";
-  }, 500);
+  let response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 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"
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: text }]
+    })
+  });
+
+  let data = await response.json();
+  let aiText = data.choices[0].message.content;
+  chat.innerHTML += "<div><b>AI R:</b> " + aiText + "</div>";
 }
 </script>
 </body>
